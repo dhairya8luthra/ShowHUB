@@ -1,0 +1,21 @@
+.wrapper {
+    min-height: rem(900px);
+    background-size: cover;
+    background-image: url(https://source.unsplash.com/tV80374iytg);
+  }
+  
+  .form {
+    z-index: 3;
+    min-height: rem(900px);
+    max-width: rem(400px);
+    padding-top: rem(80px);
+    background-color: #0a66bd !important;
+    max-width: 20%;
+  }
+  
+  .title {
+    color: light-dark(var(--mantine-color-white), var(--mantine-color-white));
+    font-family:
+      Greycliff CF,
+      var(--mantine-font-family);
+  }
