@@ -33,7 +33,7 @@ import {
   
   import Lottie from 'react-lottie-player'
   import movingreelJson from '../../lotties/transform.json'
-  
+  import { Link } from 'react-router-dom';
   const mockdata = [
     {
       icon: IconCode,
@@ -212,7 +212,14 @@ import {
             <Group justify="center" grow pb="xl" px="md">
             
               <Button variant="filled" color="yellow">Log in</Button>
-              <Button>Sign up</Button>
+              
+              <Button>
+              <Link to={'/register'}>
+                Sign up!
+                </Link>
+              </Button>
+             
+              
               
             </Group>
           </ScrollArea>

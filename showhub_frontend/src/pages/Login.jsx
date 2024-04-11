@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
   Paper,
   TextInput,
@@ -10,9 +10,21 @@ import {
   Anchor,
 } from '@mantine/core';
 import classes from './AuthenticationImage.module.css';
-
+import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function AuthenticationImage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const login = () => {
+      Axios.post('http://localhost:3001/login', {
+        email: email,
+        password: password,
+      }).then((response) => {
+        console.log(response);
+      }).then(navigate('/home'));
+  };
   return (
     
     <div className={classes.container}>
@@ -32,9 +44,15 @@ function AuthenticationImage() {
                 </Text>
           </Title>
 
-          <TextInput label="Email address" placeholder="hello@gmail.com" size="md"  className={classes.title} />
-          <PasswordInput label="Password" placeholder="Your password" mt="md" size="md"  className={classes.title} />
-          <Button fullWidth mt="xl" size="md">
+          <TextInput label="Email address" placeholder="hello@gmail.com" size="md"  className={classes.title} 
+          onChange={(e)=>{
+            setEmail(e.target.value);
+          }}/>
+          <PasswordInput label="Password" placeholder="Your password" mt="md" size="md"  className={classes.title} 
+          onChange={(e) =>{
+            setPassword(e.target.value);
+          }}/>
+          <Button onClick={login} fullWidth mt="xl" size="md">
             Login
           </Button>
 

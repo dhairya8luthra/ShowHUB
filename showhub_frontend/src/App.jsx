@@ -3,6 +3,7 @@ import Home from "./pages/Home"
 import Landing from "./pages/Landing"
 import Login from "./pages/Login"
 import AdminLogin from "./pages/AdminLogin"
+import Signup from "./pages/Signup"
 
 function App() {
  
@@ -12,8 +13,9 @@ function App() {
     <Routes>
       <Route path = '/' element={<Landing/>}/>
       <Route path = '/login' element={<Login/>}/>
-      <Route path = '/Home' element={<Home/>}/>
+      <Route path = '/home' element={<Home/>}/>
       <Route path = '/Adminlogin' element={<AdminLogin/>}/>
+      <Route path = '/register' element={<Signup/>}/>
 
     </Routes>
     </>
