@@ -6,6 +6,7 @@ const session = require("express-session");
 const authRoutes = require("./routes/authRoutes");
 const movieRoutes = require("./routes/movieRoutes");
 const cityRoutes = require("./routes/cityRoutes");
+const showRoutes = require("./routes/showRoutes");
 const app = express();
 
 app.use(express.json());
@@ -37,6 +38,8 @@ app.use("/", movieRoutes);
 
 //Use Theatre routes
 app.use("/", cityRoutes);
+//Use Show routes
+app.use("/", showRoutes);
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001");

@@ -30,6 +30,7 @@ export default function FeaturesCard({ movie }) {
         <Text fz="sm" c="dimmed" className={classes.label}>
           Cast
         </Text>
+        <Text fw={500}>{movie.actors}</Text>
         <div className={classes.castList}>{castList}</div>
       </Card.Section>
       <Card.Section className={classes.section}>

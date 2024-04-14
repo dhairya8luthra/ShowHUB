@@ -5,6 +5,7 @@ import Login from "./pages/Login"
 import AdminLogin from "./pages/AdminLogin"
 import Signup from "./pages/Signup"
 import MovieDetails from "./components/MovieDetails"
+import Selectseats from "./pages/Selectseats"
 
 function App() {
  
@@ -18,7 +19,7 @@ function App() {
       <Route path = '/Adminlogin' element={<AdminLogin/>}/>
       <Route path = '/register' element={<Signup/>}/>
       <Route path="/movies/:movieName" element={<MovieDetails />} />
-
+      <Route path="/shows/:showId/selectseats/:screenId" element={<Selectseats />}/>
     </Routes>
     </>
   )
