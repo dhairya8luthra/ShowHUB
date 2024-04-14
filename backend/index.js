@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
 const app = express();
+
 app.use(express.json());
 app.use(
   cors({
@@ -16,9 +17,10 @@ app.use(
 );
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(
   session({
-    key: "emailId",
+    key: "userId",
     secret: "123",
     resave: false,
     saveUninitialized: false,
@@ -41,14 +43,18 @@ db.connect((err) => {
   console.log("Connected to MySQL database");
 });
 
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
-});
+const requireAuth = (req, res, next) => {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+};
 
 app.post("/register", (req, res) => {
   const emailid = req.body.email;
   const password = req.body.password;
-  const userId = Math.floor(Math.random() * (9999 - 1000) + 1000); // Generating a random 4-digit user ID
+  const userId = Math.floor(Math.random() * (9999 - 1000) + 1000);
 
   db.query(
     "INSERT INTO user (userid, email, password) VALUES (?, ?, ?)",
@@ -83,8 +89,16 @@ app.post("/login", (req, res) => {
         return;
       }
 
-      // User found and credentials are correct
+      req.session.userId = result[0].userid; // Store user ID in session
       res.status(200).send("Login successful.");
     }
   );
+});
+
+app.get("/home", requireAuth, (req, res) => {
+  res.status(200).send("Welcome to the home page!");
+});
+
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
 });
