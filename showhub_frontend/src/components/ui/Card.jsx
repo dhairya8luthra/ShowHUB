@@ -1,31 +1,25 @@
-import { Card, Image, Text, Group, Badge, Center, Button } from '@mantine/core';
-import { IconGasStation, IconGauge, IconManualGearbox, IconUsers } from '@tabler/icons-react';
+import { Card, Image, Text, Group, Center ,Button} from '@mantine/core';
+import { IconUsers } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import classes from './FeaturesCard.module.css';
 
-const mockdata = [
-  { label: 'Actor1', icon: IconUsers },
-  { label: 'Actor2', icon: IconUsers },
-  { label: 'Actor3', icon: IconUsers },
-  { label: 'Actor4', icon: IconUsers },
-];
+export default function FeaturesCard({ movie }) {
+  const features =
+    movie?.cast?.map((actor, index) => (
+      <Center key={index}>
+        <IconUsers size="1.05rem" className={classes.icon} stroke={1.5} />
+        <Text size="xs">{actor}</Text>
+      </Center> 
+    ));
 
-export default function FeaturesCard() {
-  const features = mockdata.map((feature) => (
-    <Center key={feature.label}>
-      <feature.icon size="1.05rem" className={classes.icon} stroke={1.5} />
-      <Text size="xs">{feature.label}</Text>
-    </Center>
-  ));
-
-  return (
+  return movie ? (
     <Card withBorder radius="md" className={classes.card}>
       <Card.Section className={classes.imageSection}>
-        <Image src="https://source.unsplash.com/q8P8YoR6erg" alt="Tesla Model S" />
+        <Image src={movie.poster_link} alt={movie.title} w={350} h={100} />
       </Card.Section>
       <Group justify="space-between" mt="md">
         <div>
-          <Text fw={500}>Movie_title</Text>
+          <Text fw={500}>{movie.title}</Text>
           <Text fz="xs" c="dimmed">
             Title
           </Text>
@@ -36,17 +30,19 @@ export default function FeaturesCard() {
           Cast
         </Text>
         <Group gap={8} mb={-8}>
-          {features}
+        <Text fz="xs" c="dimmed">
+        {movie.actors}
+          </Text>
         </Group>
       </Card.Section>
       <Card.Section className={classes.section}>
         <Group gap={30}>
           <div>
             <Text fz="xl" fw={700} style={{ lineHeight: 1 }}>
-              Price
+              {movie.genre}
             </Text>
           </div>
-          <Link to={`/movies/${encodeURIComponent('Movie_title')}`}>
+          <Link to={`/movies/${encodeURIComponent(movie.title)}`}>
             <Button radius="xl" style={{ flex: 1 }}>
               Book now
             </Button>
@@ -54,5 +50,5 @@ export default function FeaturesCard() {
         </Group>
       </Card.Section>
     </Card>
-  );
+  ) : null;
 }

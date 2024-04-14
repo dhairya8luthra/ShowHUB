@@ -1,16 +1,17 @@
 const express = require("express");
-const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-
+const authRoutes = require("./routes/authRoutes");
+const movieRoutes = require("./routes/movieRoutes");
+const cityRoutes = require("./routes/cityRoutes");
 const app = express();
 
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5137",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -28,76 +29,14 @@ app.use(
   })
 );
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "showhub",
-});
+// Use authentication routes
+app.use("/", authRoutes);
 
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to MySQL database:", err);
-    return;
-  }
-  console.log("Connected to MySQL database");
-});
+// Use movie routes
+app.use("/", movieRoutes);
 
-const requireAuth = (req, res, next) => {
-  if (req.session.userId) {
-    next();
-  } else {
-    res.status(401).send("Unauthorized");
-  }
-};
-
-app.post("/register", (req, res) => {
-  const emailid = req.body.email;
-  const password = req.body.password;
-  const userId = Math.floor(Math.random() * (9999 - 1000) + 1000);
-
-  db.query(
-    "INSERT INTO user (userid, email, password) VALUES (?, ?, ?)",
-    [userId, emailid, password],
-    (err, result) => {
-      if (err) {
-        console.error("Error registering user:", err);
-        res.status(500).send("An error occurred while registering the user.");
-      } else {
-        res.status(200).send("User registered successfully.");
-      }
-    }
-  );
-});
-
-app.post("/login", (req, res) => {
-  const emailid = req.body.email;
-  const password = req.body.password;
-
-  db.query(
-    "SELECT * FROM user WHERE email = ? AND password = ?",
-    [emailid, password],
-    (err, result) => {
-      if (err) {
-        console.error("Error logging in:", err);
-        res.status(500).send("An error occurred while logging in.");
-        return;
-      }
-
-      if (result.length === 0) {
-        res.status(404).send("User not found or incorrect credentials.");
-        return;
-      }
-
-      req.session.userId = result[0].userid; // Store user ID in session
-      res.status(200).send("Login successful.");
-    }
-  );
-});
-
-app.get("/home", requireAuth, (req, res) => {
-  res.status(200).send("Welcome to the home page!");
-});
+//Use Theatre routes
+app.use("/", cityRoutes);
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001");

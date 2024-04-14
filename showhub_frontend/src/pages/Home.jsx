@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/ui/Navbar';
 import Card from '../components/ui/Card';
 
 export default function Home() {
-  // Define the number of cards you want to render
-  const numberOfCards = 10;
+  const [movies, setMovies] = useState([]);
 
-  // Create an array to store the cards
-  const cards = [];
-  for (let i = 0; i < numberOfCards; i++) {
-    cards.push(<Card key={i} />);
-  }
+  useEffect(() => {
+    fetch('http://localhost:3001/movies')
+      .then(response => response.json())
+      .then(data => setMovies(data))
+      .catch(error => console.error('Error fetching movies:', error));
+  }, []);
 
   return (
     <div style={{ display: 'flex' }}>
@@ -24,7 +24,9 @@ export default function Home() {
           width: '100%',
         }}
       >
-        {cards}
+        {movies.map(movie => (
+          <Card key={movie.id || `${movie.title}-${movie.genre}`} movie={movie} />
+        ))}
       </div>
     </div>
   );

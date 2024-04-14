@@ -3,12 +3,11 @@
     height: 50vh;
     width: 20vw;
     border-radius: var(--mantine-radius-md);
-    padding: 10%;
-    margin: 10px;
+    
   }
   
   .imageSection {
-    padding: var(--mantine-spacing-md);
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
