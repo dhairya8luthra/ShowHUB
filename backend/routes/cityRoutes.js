@@ -25,26 +25,30 @@ router.get("/cities", (req, res) => {
     res.json(cities);
   });
 });
-router.get("/theatresbycity:cityname", (req, res) => {
-  const cityname = decodeURIComponent(req.params.cityname);
-  db.query(
-    "SELECT * FROM theatre WHERE city = ?",
-    [cityname],
-    (err, result) => {
-      if (err) {
-        console.error("Error fetching Theatre details:", err);
-        res
-          .status(500)
-          .json({ error: "An error occurred while fetching Theatre details." });
-        return;
-      }
-      if (result.length === 0) {
-        res.status(404).json({ error: "Movie not found." });
-        return;
-      }
-      res.status(200).json(result[0]);
+router.get("/movies/:movieName/theatres/:cityName", (req, res) => {
+  const movieName = decodeURIComponent(req.params.movieName);
+  const cityName = decodeURIComponent(req.params.cityName);
+
+  const query = `
+      SELECT t.*
+      FROM theatre t
+      INNER JOIN shows s ON t.TheatreID = s.TheatreID
+      INNER JOIN movies m ON s.MovieID = m.movieId
+      WHERE m.title = ? AND t.city = ?
+    `;
+
+  db.query(query, [movieName, cityName], (err, results) => {
+    if (err) {
+      console.error("Error fetching theatres:", err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while fetching theatres." });
+      return;
     }
-  );
+
+    res.json(results);
+    console.log(results);
+  });
 });
 
 module.exports = router;
