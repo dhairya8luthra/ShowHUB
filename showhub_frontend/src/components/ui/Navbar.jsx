@@ -17,9 +17,10 @@ import {
 //import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from './NavbarSimpleColored.module.css';
 import BigLogo from './BigLogo';
+import { useNavigate } from 'react-router-dom';
 
 const data = [
-  { link: '', label: 'Movies', icon: IconMovie },
+  { link: '/home', label: 'Movies', icon: IconMovie },
   { link: '', label: 'Past Bookings', icon: IconTicket },
   { link: '', label: 'Settings', icon: IconSettings },
   { link: '', label: 'Log out', icon: IconLogout2},

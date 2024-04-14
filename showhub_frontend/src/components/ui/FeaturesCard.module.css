@@ -1,25 +1,30 @@
-
-
-
-
 .card {
-  background-color: var(--mantine-color-body);
-  height: 70vh;
-  width: 20vw;
-  border-radius: var(--mantine-radius-md);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  /* Style for the overall card */
+  padding: 20px;
+  width: 350px; /* Set a fixed width for the card */
+  height: 600px;
+  /* You can adjust other styles as needed */
 }
 
 .imageSection {
-  padding: var(--mantine-spacing-lg);
-  height: 10vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid var(--mantine-color-gray-3);
+  /* Style for the section containing the image */
+  width: 100%; /* Ensure the section takes up full width */
+  height: 300px; /* Set a fixed height for the image section */
+  overflow: hidden; /* Hide any overflow content */
+  position: relative; /* Positioning context for the image */
 }
+
+.image {
+  /* Style for the image itself */
+  width: 100%; /* Make the image fill the container horizontally */
+  height: 100%; /* Make the image fill the container vertically */
+ /* Cover the entire container while preserving aspect ratio */
+  position: absolute; /* Position the image absolutely within its parent */
+  top: 0; /* Align to the top of the image section */
+  padding: 0;
+  left: 0; /* Align to the left of the image section */
+}
+
 
 .section {
   padding: var(--mantine-spacing-md);

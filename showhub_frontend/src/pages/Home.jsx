@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/ui/Navbar';
 import Card from '../components/ui/Card';
@@ -13,14 +15,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div  style={{ display: 'flex'}}>
       <Navbar />
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gridTemplateRows:'70vh',
-          gap: '15vh',  // Set th11e gap between rows to 15% of viewport height
+          gap: '20vh',  // Set th11e gap between rows to 15% of viewport height
           padding: '5rem',
           width: '100%',
         }}
