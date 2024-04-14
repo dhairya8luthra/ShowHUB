@@ -1,15 +1,16 @@
-import { Card, Image, Text, Group, Center ,Button} from '@mantine/core';
+
+import React from 'react';
+import { Card, Image, Text, Group, Center, Button } from '@mantine/core';
 import { IconUsers } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import classes from './FeaturesCard.module.css';
 
 export default function FeaturesCard({ movie }) {
-  const features =
+  const castList =
     movie?.cast?.map((actor, index) => (
-      <Center key={index}>
-        <IconUsers size="1.05rem" className={classes.icon} stroke={1.5} />
-        <Text size="xs">{actor}</Text>
-      </Center> 
+      <Text key={index} fz="xs" c="dimmed" style={{ lineHeight: '1.5' }}>
+        {actor}
+      </Text>
     ));
 
   return movie ? (
@@ -25,29 +26,26 @@ export default function FeaturesCard({ movie }) {
           </Text>
         </div>
       </Group>
-      <Card.Section className={classes.section} mt="md">
+      <Card.Section className={classes.section}>
         <Text fz="sm" c="dimmed" className={classes.label}>
           Cast
         </Text>
-        <Group gap={8} mb={-8}>
-        <Text fz="xs" c="dimmed">
-        {movie.actors}
-          </Text>
-        </Group>
+        <div className={classes.castList}>{castList}</div>
       </Card.Section>
       <Card.Section className={classes.section}>
-        <Group gap={30}>
-          <div>
-            <Text fz="xl" fw={700} style={{ lineHeight: 1 }}>
-              {movie.genre}
-            </Text>
-          </div>
-          <Link to={`/movies/${encodeURIComponent(movie.title)}`}>
-            <Button radius="xl" style={{ flex: 1 }}>
-              Book now
-            </Button>
-          </Link>
-        </Group>
+        <Text fz="sm" c="dimmed" className={classes.label}>
+          Genre
+        </Text>
+        <Text fz="xl" fw={700} style={{ lineHeight: 1 }}>
+          {movie.genre}
+        </Text>
+      </Card.Section>
+      <Card.Section className={classes.section}>
+        <Link to={`/movies/${encodeURIComponent(movie.title)}`}>
+          <Button radius="xl" style={{ width: '100%' }}>
+            Book now
+          </Button>
+        </Link>
       </Card.Section>
     </Card>
   ) : null;
