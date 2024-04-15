@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const movieRoutes = require("./routes/movieRoutes");
 const cityRoutes = require("./routes/cityRoutes");
 const showRoutes = require("./routes/showRoutes");
+const db = require("./db");
 const app = express();
 
 app.use(express.json());

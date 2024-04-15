@@ -1,14 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql");
-
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "showhub",
-});
-
+const db = require("../db/db");
 // Register route
 router.post("/register", (req, res) => {
   const emailid = req.body.email;

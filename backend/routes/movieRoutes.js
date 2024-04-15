@@ -1,12 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "showhub",
-});
+const db = require("../db/db");
 
 router.get("/movies", (req, res) => {
   db.query("SELECT * FROM movies", (err, result) => {

@@ -1,12 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql");
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "showhub",
-});
+const db = require("../db/db");
 
 router.get("/shows/movies/:moviename/theatre/:theatre_id", (req, res) => {
   const moviename = decodeURIComponent(req.params.moviename);

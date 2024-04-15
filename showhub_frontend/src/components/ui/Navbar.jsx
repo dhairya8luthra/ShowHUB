@@ -19,6 +19,8 @@ import classes from './NavbarSimpleColored.module.css';
 import BigLogo from './BigLogo';
 import { useNavigate } from 'react-router-dom';
 
+
+
 const data = [
   { link: '/home', label: 'Movies', icon: IconMovie },
   { link: '', label: 'Past Bookings', icon: IconTicket },
@@ -26,8 +28,12 @@ const data = [
   { link: '', label: 'Log out', icon: IconLogout2},
 ];
 
+
+
 export default function NavbarSimpleColored() {
   const [active, setActive] = useState('Billing');
+  const navigate = useNavigate();
+  
 
   const links = data.map((item) => (
     <a
@@ -38,6 +44,7 @@ export default function NavbarSimpleColored() {
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
+        navigate(item.link);
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
