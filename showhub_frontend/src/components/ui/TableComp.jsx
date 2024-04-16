@@ -29,6 +29,12 @@ export default function TheatreTable({ moviename, city_selected }) {
       .catch(error => console.error('Error fetching show details:', error));
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
   const rows = theatres.map((theatre, index) => (
     <Table.Tr key={theatre.TheatreID}>
       <Table.Td>{theatre.TheatreName}</Table.Td>
@@ -54,15 +60,15 @@ export default function TheatreTable({ moviename, city_selected }) {
         </Table>
       </ScrollArea>
 
-      <Modal opened={showModal} onClose={() => setShowModal(false)} title="Show Details">
+      <Modal opened={showModal} onClose={() => setShowModal(false)} title="Show Details" size="xl">
         {selectedShow ? (
           <>
             {selectedShow.map((show, index) => (
-              <Group key={index} position="apart">
+              <Group key={index} position="center" noWrap>
                 <Text>
-                  {show.MovieTitle} - {show.StartTiming} - {show.EndTime} - Rs.{show.Price}
+                  {show.title} - {formatDate(show.date_of_movie)} {show.StartTiming} - {show.EndTime} - Rs.{show.Price}
                 </Text>
-                <Link to={`/shows/${show.ShowID}/selectseats/${show.ScreenID}`}>
+                <Link to={`/shows/${show.ShowID}/selectseats/${show.ScreenID}/moviename/${show.title}`}>
                   <Button>Select seats</Button>
                 </Link>
               </Group>

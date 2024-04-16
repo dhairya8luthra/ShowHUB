@@ -7,7 +7,7 @@ router.get("/shows/movies/:moviename/theatre/:theatre_id", (req, res) => {
   const theatre_id = decodeURIComponent(req.params.theatre_id);
 
   db.query(
-    "SELECT Shows.ShowID, Movies.title AS MovieTitle, Shows.StartTiming, Shows.EndTime, Shows.Price FROM Shows JOIN Movies ON Shows.MovieID = Movies.movieId WHERE Shows.TheatreID = ? AND Movies.title = ?;",
+    "SELECT * FROM Shows JOIN Movies ON Shows.MovieID = Movies.movieId WHERE Shows.TheatreID = ? AND Movies.title = ?;",
     [theatre_id, moviename],
     (err, result) => {
       if (err) {
@@ -26,6 +26,7 @@ router.get("/shows/movies/:moviename/theatre/:theatre_id", (req, res) => {
 
       // Send the entire result array as the response
       res.status(200).json(result);
+      console.log(result);
     }
   );
 });

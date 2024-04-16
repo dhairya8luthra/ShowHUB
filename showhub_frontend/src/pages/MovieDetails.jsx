@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Navbar from './ui/Navbar';
+import Navbar from '../components/ui/Navbar';
 import { Autocomplete, Button } from '@mantine/core';
-import TableComp from './ui/TableComp';
+import TableComp from '../components/ui/TableComp';
 import './MovieDetails.css';
 
 export default function MovieDetails() {
@@ -73,7 +73,7 @@ export default function MovieDetails() {
                   data={cities}
                   onChange={setCity}
                 />
-                <button class="btn">
+                <button className="btn">
                   Select<span aria-hidden></span>
                   <span aria-hidden class="btn__glitch"></span>
                   <span aria-hidden class="btn__tag"></span>
