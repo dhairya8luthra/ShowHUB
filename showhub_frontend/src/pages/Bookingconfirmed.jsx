@@ -10,10 +10,11 @@ export default function BookingConfirmed() {
       // Your code for confirming the booking...
 
       // Once booking is confirmed, show alert
-      alert('Your booking has been confirmed and details have been sent to your registered email');
+      
       
       // Redirect to the movies page
       navigate('/home');
+      alert('Your booking has been confirmed and details have been sent to your registered email');
     };
 
     confirmBooking();

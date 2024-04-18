@@ -4,7 +4,8 @@ import Navbar from '../components/ui/Navbar';
 import { Button, Modal, Group, Text } from '@mantine/core';
 import axiosInstance from '../Auth/axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Import the useAuth hook
+import { useAuth } from '../context/AuthContext';
+import './selectedseats.css' // Import the useAuth hook
 
 function SelectSeats() {
   const { showId, screenId, movietitle, price } = useParams();
@@ -46,7 +47,7 @@ function SelectSeats() {
       // Make a POST request to create the booking
       const response = await axiosInstance.post('http://localhost:3001/createbooking', {
         showId: showId,
-        seats: selectedSeats.map(seat => ({ seat_no: seat, price: price })), // Map selectedSeats to object format
+        seats: selectedSeats, // Map selectedSeats to object format
         userEmail: userEmail, // Use the userEmail from AuthContext
         totalPrice: selectedSeats.length * price, // Calculate total price
         movieName: movietitle,
@@ -114,7 +115,7 @@ function SelectSeats() {
   return (
     <div style={{ display: 'flex' }}>
       <Navbar />
-      <div>
+      <div className='tbc'>
         <h2>Select Seats for Show {movietitle} on Screen {screenId}</h2>
         {renderSeats()}
         <p>Selected Seats: {selectedSeats.join(', ')}</p>
