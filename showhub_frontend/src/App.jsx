@@ -6,12 +6,14 @@ import AdminLogin from "./pages/AdminLogin"
 import Signup from "./pages/Signup"
 import MovieDetails from "./pages/MovieDetails"
 import Selectseats from "./pages/Selectseats"
+import {AuthProvider} from "./context/AuthContext"
 
 function App() {
  
 
   return (
     <>
+    <AuthProvider>
     <Routes>
       <Route path = '/' element={<Landing/>}/>
       <Route path = '/login' element={<Login/>}/>
@@ -21,6 +23,7 @@ function App() {
       <Route path="/movies/:movieName" element={<MovieDetails />} />
       <Route path="/shows/:showId/selectseats/:screenId/moviename/:movietitle/price/:price" element={<Selectseats />}/>
     </Routes>
+    </AuthProvider>
     </>
   )
 }

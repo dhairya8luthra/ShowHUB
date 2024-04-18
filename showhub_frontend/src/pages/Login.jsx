@@ -4,13 +4,15 @@ import classes from './AuthenticationImage.module.css';
 import Axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { useAuth } from '../context/AuthContext';
 
 function AuthenticationImage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const { login } = useAuth();
   const [password, setPassword] = useState('');
 
-  const login = () => {
+  const handlelogin = () => {
     Axios.post('http://localhost:3001/login', {
       email: email,
       password: password,
@@ -24,6 +26,7 @@ function AuthenticationImage() {
         console.error('Login error:', error);
         // Handle the error, e.g., display an error message
       });
+      login(email);
   };
 
   return (
@@ -55,7 +58,7 @@ function AuthenticationImage() {
               setPassword(e.target.value);
             }}
           />
-          <Button onClick={login} fullWidth mt="xl" size="md">
+          <Button onClick={handlelogin} fullWidth mt="xl" size="md">
             Login
           </Button>
           <Text ta="center" mt="md">
