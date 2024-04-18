@@ -3,12 +3,16 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../components/ui/Navbar';
 import { Button, Modal, Group, Text } from '@mantine/core';
 import axiosInstance from '../Auth/axios';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Import the useAuth hook
 
-function Selectseats() {
-  const { showId, screenId, movietitle ,price} = useParams();
+function SelectSeats() {
+  const { showId, screenId, movietitle, price } = useParams();
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [seatData, setSeatData] = useState([]);
+  const { userEmail } = useAuth(); // Access the userEmail from AuthContext
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchSeatData();
@@ -17,14 +21,12 @@ function Selectseats() {
   const fetchSeatData = async () => {
     try {
       const response = await axiosInstance.get(`http://localhost:3001/seats/${showId}`);
-      // Directly access the data property of the response
       const data = response.data;
       setSeatData(data);
     } catch (error) {
       console.error('Error fetching seat data:', error);
     }
   };
-  
 
   const handleSeatClick = (seatNumber) => {
     const isSelected = selectedSeats.includes(seatNumber);
@@ -37,6 +39,31 @@ function Selectseats() {
 
   const handleBookSeats = () => {
     setShowModal(true);
+  };
+
+  const handleConfirmBooking = async () => {
+    try {
+      // Make a POST request to create the booking
+      const response = await axiosInstance.post('http://localhost:3001/createbooking', {
+        showId: showId,
+        seats: selectedSeats, // Map selectedSeats to object format
+        userEmail: userEmail, // Use the userEmail from AuthContext
+        totalPrice: selectedSeats.length * price, // Calculate total price
+        movieName: movietitle,
+      });
+
+      // If booking created successfully, navigate to booking confirmation page
+      if (response.data.message === "Booking created successfully.") {
+        console.log('Booking created successfully');
+        navigate('/bookingconfirmed');
+      } else {
+        console.error('Error creating booking:', response.data.error);
+        // Handle error
+      }
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      // Handle error
+    }
   };
 
   const renderSeats = () => {
@@ -137,8 +164,8 @@ function Selectseats() {
             <Text>Show: {movietitle}</Text>
             <Text>Screen: {screenId}</Text>
             <Text>Selected Seats: {selectedSeats.join(', ')}</Text>
-            <Text>Total price: Rs{selectedSeats.length*price}</Text>
-            <Button>Confirm Booking</Button>
+            <Text>Total price: Rs{selectedSeats.length * price}</Text>
+            <Button onClick={handleConfirmBooking}>Confirm Booking</Button>
             {/* Add additional booking details as needed */}
           </Group>
         </Modal>
@@ -147,4 +174,4 @@ function Selectseats() {
   );
 }
 
-export default Selectseats;
+export default SelectSeats;
