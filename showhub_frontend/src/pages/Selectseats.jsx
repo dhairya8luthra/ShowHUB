@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/ui/Navbar';
 import { Button, Modal, Group, Text } from '@mantine/core';
+import axiosInstance from '../Auth/axios';
 
 function Selectseats() {
-  const { showId, screenId, movietitle } = useParams();
+  const { showId, screenId, movietitle ,price} = useParams();
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [seatData, setSeatData] = useState([]);
@@ -15,13 +16,15 @@ function Selectseats() {
 
   const fetchSeatData = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/seats/${showId}`);
-      const data = await response.json();
+      const response = await axiosInstance.get(`http://localhost:3001/seats/${showId}`);
+      // Directly access the data property of the response
+      const data = response.data;
       setSeatData(data);
     } catch (error) {
       console.error('Error fetching seat data:', error);
     }
   };
+  
 
   const handleSeatClick = (seatNumber) => {
     const isSelected = selectedSeats.includes(seatNumber);
@@ -134,6 +137,8 @@ function Selectseats() {
             <Text>Show: {movietitle}</Text>
             <Text>Screen: {screenId}</Text>
             <Text>Selected Seats: {selectedSeats.join(', ')}</Text>
+            <Text>Total price: Rs{selectedSeats.length*price}</Text>
+            <Button>Confirm Booking</Button>
             {/* Add additional booking details as needed */}
           </Group>
         </Modal>

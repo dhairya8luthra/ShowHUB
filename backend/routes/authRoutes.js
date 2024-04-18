@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/db");
+const jwt = require("jsonwebtoken");
+const secretKey = "jwt_secret_key";
 // Register route
 router.post("/register", (req, res) => {
   const emailid = req.body.email;
@@ -40,9 +42,14 @@ router.post("/login", (req, res) => {
         res.status(404).send("User not found or incorrect credentials.");
         return;
       }
+      const token = jwt.sign({ userId: result[0].userid }, secretKey, {
+        expiresIn: "1h", // Token expiration time
+      });
 
-      req.session.userId = result[0].userid; // Store user ID in session
-      res.status(200).send("Login successful.");
+      req.session.userId = result[0].userid;
+      res.status(200).json({ token });
+      console.log("Token:", token);
+      // Store user ID in session
     }
   );
 });

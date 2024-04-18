@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Group, Table, ScrollArea, Button, Modal, Text } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../../Auth/axios';
 
 export default function TheatreTable({ moviename, city_selected }) {
   const [scrolled, setScrolled] = useState(false);
@@ -13,17 +14,17 @@ export default function TheatreTable({ moviename, city_selected }) {
   }, [moviename, city_selected]);
 
   const fetchTheatres = () => {
-    fetch(`http://localhost:3001/movies/${encodeURIComponent(moviename)}/theatres/${encodeURIComponent(city_selected)}`)
-      .then(response => response.json())
-      .then(data => setTheatres(data))
+    axiosInstance
+      .get(`/movies/${encodeURIComponent(moviename)}/theatres/${encodeURIComponent(city_selected)}`)
+      .then(response => setTheatres(response.data))
       .catch(error => console.error('Error fetching theatres:', error));
   };
 
   const handleShowSelect = (theatreId) => {
-    fetch(`http://localhost:3001/shows/movies/${encodeURIComponent(moviename)}/theatre/${encodeURIComponent(theatreId)}`)
-      .then(response => response.json())
-      .then(data => {
-        setSelectedShow(data);
+    axiosInstance
+      .get(`/shows/movies/${encodeURIComponent(moviename)}/theatre/${encodeURIComponent(theatreId)}`)
+      .then(response => {
+        setSelectedShow(response.data);
         setShowModal(true);
       })
       .catch(error => console.error('Error fetching show details:', error));
@@ -68,7 +69,7 @@ export default function TheatreTable({ moviename, city_selected }) {
                 <Text>
                   {show.title} - {formatDate(show.date_of_movie)} {show.StartTiming} - {show.EndTime} - Rs.{show.Price}
                 </Text>
-                <Link to={`/shows/${show.ShowID}/selectseats/${show.ScreenID}/moviename/${show.title}`}>
+                <Link to={`/shows/${show.ShowID}/selectseats/${show.ScreenID}/moviename/${show.title}/price/${show.Price}`}>
                   <Button>Select seats</Button>
                 </Link>
               </Group>

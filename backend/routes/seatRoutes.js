@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
 const db = require("../db/db");
+const verifyToken = require("../middleware/verifytoken");
 
-router.get("/seats/:showid/", (req, res) => {
+router.get("/seats/:showid/", verifyToken, (req, res) => {
   const showid = req.params.showid;
   db.query("SELECT * FROM seat WHERE showid = ?", [showid], (err, result) => {
     if (err) {
