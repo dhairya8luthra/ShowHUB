@@ -7,6 +7,7 @@ import Signup from "./pages/Signup"
 import MovieDetails from "./pages/MovieDetails"
 import Selectseats from "./pages/Selectseats"
 import Bookingconfirmed from "./pages/Bookingconfirmed"
+import AdminHome from "./pages/AdminHome"
 import {AuthProvider} from "./context/AuthContext"
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
       <Route path="/movies/:movieName" element={<MovieDetails />} />
       <Route path="/shows/:showId/selectseats/:screenId/moviename/:movietitle/price/:price" element={<Selectseats />}/>
       <Route path="/bookingconfirmed" element={<Bookingconfirmed/>}/>
+      <Route path="/modifydatabase" element={<AdminHome/>}/>
     </Routes>
     </AuthProvider>
     </>

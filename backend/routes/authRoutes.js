@@ -53,5 +53,34 @@ router.post("/login", (req, res) => {
     }
   );
 });
+// Admin login route
+router.post("/admin/login", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  db.query(
+    "SELECT * FROM admin WHERE email = ? AND password = ?",
+    [email, password],
+    (err, result) => {
+      if (err) {
+        console.error("Error logging in admin:", err);
+        res.status(500).send("An error occurred while logging in as admin.");
+        return;
+      }
+
+      if (result.length === 0) {
+        res.status(404).send("Admin not found or incorrect credentials.");
+        return;
+      }
+
+      const token = jwt.sign({ adminId: result[0].id }, secretKey, {
+        expiresIn: "1h", // Token expiration time
+      });
+
+      res.status(200).json({ token });
+      console.log("Admin Token:", token);
+    }
+  );
+});
 
 module.exports = router;

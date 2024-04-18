@@ -46,7 +46,7 @@ function SelectSeats() {
       // Make a POST request to create the booking
       const response = await axiosInstance.post('http://localhost:3001/createbooking', {
         showId: showId,
-        seats: selectedSeats, // Map selectedSeats to object format
+        seats: selectedSeats.map(seat => ({ seat_no: seat, price: price })), // Map selectedSeats to object format
         userEmail: userEmail, // Use the userEmail from AuthContext
         totalPrice: selectedSeats.length * price, // Calculate total price
         movieName: movietitle,

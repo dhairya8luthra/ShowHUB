@@ -39,4 +39,50 @@ router.get("/movies/:movieName", (req, res) => {
   );
 });
 
+router.post("/addmovie", verifyToken, (req, res) => {
+  const {
+    title,
+    description,
+    actors,
+    genre,
+    trailerLink,
+    releaseDate,
+    runningTime,
+    createdAt,
+    movieFormat,
+  } = req.body;
+
+  // Generate a random number for the movie ID
+  const movieId = Math.floor(Math.random() * 1000000) + 1;
+
+  // Insert movie into database
+  const insertMovieQuery =
+    "INSERT INTO movies (movieid, title, description, actors, genre, trailer_link, release_date, running_time, createdat, movie_format) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  db.query(
+    insertMovieQuery,
+    [
+      movieId,
+      title,
+      description,
+      actors,
+      genre,
+      trailerLink,
+      releaseDate,
+      runningTime,
+      createdAt,
+      movieFormat,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error adding movie:", err);
+        res
+          .status(500)
+          .json({ error: "An error occurred while adding the movie." });
+        return;
+      }
+      res.status(201).json({ message: "Movie added successfully." });
+    }
+  );
+});
+
 module.exports = router;
