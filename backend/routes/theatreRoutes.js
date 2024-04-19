@@ -5,7 +5,7 @@ const db = require("../db/db");
 const verifyToken = require("../middleware/verifytoken");
 
 router.get("/Theatres", verifyToken, (req, res) => {
-  db.query("SELECT * FROM Theatres", (err, result) => {
+  db.query("SELECT * FROM Theatre", (err, result) => {
     if (err) {
       console.error("Error fetching Theatres:", err);
       res
@@ -14,6 +14,8 @@ router.get("/Theatres", verifyToken, (req, res) => {
       return;
     }
     res.status(200).json(result);
+    console.log("Theatres fetched successfully");
+    console.log(result);
   });
 });
 
@@ -38,7 +40,37 @@ router.get("/Theatres/:TheatreName", (req, res) => {
     }
   );
 });
+router.put("/updateTheatre/:theatreID", verifyToken, (req, res) => {
+  const theatreID = req.params.theatreID;
+  const { theatrename, noofscreens, city, address } = req.body;
+  console.log(theatreID);
+  console.log(req.body);
+  // Ensure theatreID is provided
+  if (!theatreID) {
+    return res.status(400).json({ error: "Theatre ID is required." });
+  }
 
+  // Update theatre in the database
+  const updateTheatreQuery =
+    "UPDATE theatre SET TheatreName = ?, NoOfScreens = ?, city = ?, address = ? WHERE TheatreID = ?";
+  db.query(
+    updateTheatreQuery,
+    [theatrename, noofscreens, city, address, theatreID],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating theatre:", err);
+        res
+          .status(500)
+          .json({ error: "An error occurred while updating the theatre." });
+        return;
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Theatre not found." });
+      }
+      res.json({ message: "Theatre updated successfully." });
+    }
+  );
+});
 router.post("/addTheatre", verifyToken, (req, res) => {
   const { theatrename, noofscreens, city, address } = req.body;
 
@@ -69,7 +101,7 @@ router.delete("/deletetheatre", verifyToken, (req, res) => {
 
   // Ensure movieID is provided
   if (!theatreID) {
-    return res.status(400).json({ error: "Movie ID is required." });
+    return res.status(400).json({ error: "Theatre ID is required." });
   }
 
   const deletetheatreQuery = "DELETE FROM theatre WHERE TheatreID = ?";

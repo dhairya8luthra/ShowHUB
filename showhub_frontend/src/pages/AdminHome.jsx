@@ -1,4 +1,3 @@
-// Existing imports
 import React, { useState, useEffect } from 'react';
 import AdminNavbar from '../components/ui/AdminNavbar';
 import { Button, SegmentedControl, Autocomplete } from '@mantine/core';
@@ -27,33 +26,52 @@ export default function AdminHome() {
     createdAt: '',
     movieFormat: '',
   });
+
   const [formTheatreData, setFormTheatreData] = useState({
     theatrename: '',
     noofscreens: '',
-    city:'',
-    address:'',    
+    city: '',
+    address: '',
   });
+
   const [movieTitles, setMovieTitles] = useState([]);
+  const [TheatreTitles, setTheatreTitles] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedTheatre, setSelectedTheatre] = useState(null);
 
   useEffect(() => {
     fetchMovieTitles();
-  }, []);
+    fetchTheatreTitles();
+  }, [],[]);
 
   const fetchMovieTitles = async () => {
     try {
       const response = await axiosInstance.get('/movies');
+      console.log(response.data);
       const titles = response.data.map((movie) => movie.title);
       setMovieTitles(titles);
+      console.log(titles);
     } catch (error) {
       console.error('Error fetching movie titles:', error);
+    }
+  };
+
+  const fetchTheatreTitles = async () => {
+    try {
+      const response = await axiosInstance.get('/Theatres');
+      const TheatreTitles = response.data.map((theatre) => theatre.TheatreName);
+      console.log(response.data);
+      setTheatreTitles(TheatreTitles);
+      console.log(TheatreTitles);
+    } catch (error) {
+      console.error('Error fetching theatre titles:', error);
     }
   };
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
     setShowMovieForm(option === 'Add Movie' || option === 'Modify Movie');
-    setShowAddTheatreForm(option === 'Add Theatre');
+    setShowAddTheatreForm(option === 'Add Theatre' || option === 'Modify Theatre');
     setAddShowForm(option === 'Add Show');
     setdeletemovieForm(option === 'Delete Movie');
     setdeletetheatreForm(option === 'Delete Theatre');
@@ -70,7 +88,14 @@ export default function AdminHome() {
       running_time: '',
       movie_format: '',
     });
+    setFormTheatreData({
+      theatrename: '',
+      noofscreens: '',
+      city: '',
+      address: '',
+    });
     setSelectedMovie(null);
+    setSelectedTheatre(null);
   };
 
   const handleMovieSelect = async (title) => {
@@ -95,6 +120,22 @@ export default function AdminHome() {
     }
   };
 
+  const handleTheatreSelect = async (theatrename) => {
+    try {
+      const response = await axiosInstance.get(`/Theatres/${theatrename}`);
+      const theatreData = response.data;
+      setSelectedTheatre(theatreData);
+      setFormTheatreData({
+        theatrename: theatreData.TheatreName,
+        noofscreens: theatreData.NoOfScreens,
+        city: theatreData.city,
+        address: theatreData.address,
+      });
+    } catch (error) {
+      console.error('Error fetching theatre details:', error);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -102,6 +143,7 @@ export default function AdminHome() {
       [name]: value,
     });
   };
+
   const handleTheatreInputChange = (e) => {
     const { name, value } = e.target;
     setFormTheatreData({
@@ -136,7 +178,7 @@ export default function AdminHome() {
   const handleAddTheatre = async () => {
     try {
       const response = await axiosInstance.post('/addtheatre', formTheatreData);
-      console.log(formTheatreData)
+      console.log(formTheatreData);
       console.log(response.data);
       console.log(response.data);
     } catch (error) {
@@ -144,6 +186,16 @@ export default function AdminHome() {
     }
   };
 
+  const handleUpdateTheatre = async () => {
+    try {
+      const response = await axiosInstance.put(`/updateTheatre/${selectedTheatre.TheatreID}`, formTheatreData);
+      console.log(response.data);
+      // Optionally, you can show a success message or redirect to another page
+    } catch (error) {
+      console.error('Error updating theatre:', error);
+      // Handle error
+    }
+  };
   const handleAddShow = async () => {
     try {
       const response = await axiosInstance.post('/addshow', formData);
@@ -168,7 +220,7 @@ export default function AdminHome() {
 
   const handleDeleteTheatre = async () => {
     try {
-      const response = await axiosInstance.post('/deletetheatre', formData);
+      const response = await axiosInstance.delete('/deletetheatre', { data: { theatreID: selectedTheatre.TheatreID } });
       console.log(response.data);
     } catch (error) {
       console.error('Error deleting theatre:', error);
@@ -347,29 +399,101 @@ export default function AdminHome() {
           </form>
         )}
 
-        {showAddTheatreForm && (
-          <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              TheatreName:
-              <input type="text" name="theatrename" value={formTheatreData.theatrename} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              Number Of Screens:
-              <input type="text" name="noofscreens" value={formTheatreData.nofscreens} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              City:
-              <input type="text" name="city" value={formTheatreData.city} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              Address:
-              <input type="text" name="address" value={formTheatreData.address} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
-            </label>
-            <Button onClick={handleAddTheatre} color="#fdc500" style={{ alignSelf: 'flex-start' }}>
-              Add Theatre
-            </Button>
-          </form>
-        )}
+{showAddTheatreForm && (
+  <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
+    {selectedOption === 'Add Theatre' && (
+      <>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          TheatreName:
+          <input type="text" name="theatrename" value={formTheatreData.theatrename} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          Number Of Screens:
+          <input type="text" name="noofscreens" value={formTheatreData.noofscreens} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          City:
+          <input type="text" name="city" value={formTheatreData.city} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          Address:
+          <input type="text" name="address" value={formTheatreData.address} onChange={handleTheatreInputChange} style={{ padding: '8px' }} />
+        </label>
+        <Button onClick={handleAddTheatre} color="#fdc500" style={{ alignSelf: 'flex-start' }}>
+          Add Theatre
+        </Button>
+      </>
+    )}
+              {selectedOption === 'Modify Theatre' && (
+  <>
+    <label style={{ display: 'flex', flexDirection: 'column' }}>
+      Select Theatre:
+      <Autocomplete
+        data={TheatreTitles}
+        onChange={(value) => handleTheatreSelect(value)}
+        style={{ padding: '8px' }}
+        placeholder="Select theatre name"
+      />
+    </label>
+    {selectedTheatre && (
+      <>
+        {/* Modify Theatre form fields */}
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          Theatre Name:
+          <input
+            type="text"
+            name="theatrename"
+            value={formTheatreData.theatrename} // Update this line
+            onChange={handleTheatreInputChange}
+            style={{ padding: '8px' }}
+            placeholder="Theatre Name"
+          />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          Number of Screens:
+          <input
+            type="text"
+            name="noofscreens"
+            value={formTheatreData.noofscreens} // Update this line
+            onChange={handleTheatreInputChange}
+            style={{ padding: '8px' }}
+            placeholder="Number of Screens"
+          />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          City:
+          <input
+            type="text"
+            name="city"
+            value={formTheatreData.city} // Update this line
+            onChange={handleTheatreInputChange}
+            style={{ padding: '8px' }}
+            placeholder="City"
+          />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column' }}>
+          Address:
+          <input
+            type="text"
+            name="address"
+            value={formTheatreData.address} // Update this line
+            onChange={handleTheatreInputChange}
+            style={{ padding: '8px' }}
+            placeholder="Address"
+          />
+        </label>
+        <Button onClick={handleUpdateTheatre} color="#fdc500" style={{ alignSelf: 'flex-start' }}>
+          Update Theatre
+        </Button>
+      </>
+    )}
+  </>
+)}
+
+
+
+  </form>
+)}
 
         {AddShowForm && (
           <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
@@ -425,12 +549,21 @@ export default function AdminHome() {
         {deletetheatreForm && (
           <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
             <label style={{ display: 'flex', flexDirection: 'column' }}>
-              Theatre ID:
-              <input type="text" name="title" value={formData.title} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <Button onClick={handleDeleteTheatre} color="#fdc500" style={{ alignSelf: 'flex-start' }}>
-              Delete Theatre
-            </Button>
+      Select Theatre:
+      <Autocomplete
+        data={TheatreTitles}
+        onChange={(value) => handleTheatreSelect(value)}
+        style={{ padding: '8px' }}
+        placeholder="Select theatre name"
+      />
+    </label>
+    {selectedTheatre && (
+      <>
+        <Button onClick={handleDeleteTheatre} color="#dc3545" style={{ alignSelf: 'flex-start' }}>
+          Delete Theatre
+        </Button>
+      </>
+    )}
           </form>
         )}
         {deleteshowForm && (
