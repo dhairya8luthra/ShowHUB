@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql");
 const db = require("../db/db");
 const verifyToken = require("../middleware/verifytoken");
 
@@ -47,6 +46,7 @@ router.post("/addmovie", verifyToken, (req, res) => {
     genre,
     trailerLink,
     releaseDate,
+    posterlink,
     runningTime,
     createdAt,
     movieFormat,
@@ -57,7 +57,7 @@ router.post("/addmovie", verifyToken, (req, res) => {
 
   // Insert movie into database
   const insertMovieQuery =
-    "INSERT INTO movies (movieid, title, description, actors, genre, trailer_link, release_date, running_time, createdat, movie_format) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO movies (movieid, title, description, actors, genre, trailer_link, release_date,poster_link, running_time, createdat, movie_format) VALUES (?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
   db.query(
     insertMovieQuery,
     [
@@ -68,6 +68,7 @@ router.post("/addmovie", verifyToken, (req, res) => {
       genre,
       trailerLink,
       releaseDate,
+      posterlink,
       runningTime,
       createdAt,
       movieFormat,
@@ -83,6 +84,73 @@ router.post("/addmovie", verifyToken, (req, res) => {
       res.status(201).json({ message: "Movie added successfully." });
     }
   );
+});
+
+// PUT route to update movie data
+router.put("/movies/:id", verifyToken, (req, res) => {
+  const movieId = req.params.id;
+  const {
+    title,
+    description,
+    actors,
+    genre,
+    trailerLink,
+    releaseDate,
+    posterLink,
+    runningTime,
+    createdAt,
+    movieFormat,
+  } = req.body;
+
+  // Update movie data in the database
+  const updateMovieQuery =
+    "UPDATE movies SET title = ?, description = ?, actors = ?, genre = ?, trailer_link = ?,  poster_link = ?, running_time = ?,  movie_format = ? WHERE movieid = ?";
+  db.query(
+    updateMovieQuery,
+    [
+      title,
+      description,
+      actors,
+      genre,
+      trailerLink,
+      posterLink,
+      runningTime,
+      movieFormat,
+      movieId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating movie:", err);
+        res
+          .status(500)
+          .json({ error: "An error occurred while updating the movie." });
+        return;
+      }
+      res.status(200).json({ message: "Movie updated successfully." });
+    }
+  );
+});
+router.delete("/deletemovie", verifyToken, (req, res) => {
+  const { movieName } = req.body;
+
+  // Ensure movieID is provided
+  if (!movieName) {
+    return res.status(400).json({ error: "Movie Name is required." });
+  }
+
+  const deleteMovieQuery = "DELETE FROM movies WHERE title = ?";
+  db.query(deleteMovieQuery, [movieName], (err, result) => {
+    if (err) {
+      console.error("Error deleting movie:", err);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while deleting the movie." });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Movie not found." });
+    }
+    res.json({ message: "Movie deleted successfully." });
+  });
 });
 
 module.exports = router;

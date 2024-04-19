@@ -9,13 +9,14 @@ const cityRoutes = require("./routes/cityRoutes");
 const showRoutes = require("./routes/showRoutes");
 const seatRoutes = require("./routes/seatRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
+const theatreRoutes = require("./routes/theatreRoutes");
 const app = express();
 
 app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
@@ -46,6 +47,8 @@ app.use("/", showRoutes);
 app.use("/", seatRoutes);
 // Use booking routes
 app.use("/", bookingRoutes);
+//Use Theatre routes
+app.use("/", theatreRoutes);
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
