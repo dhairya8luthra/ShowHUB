@@ -77,24 +77,31 @@ router.get("/analytics/city/:city/:days", verifyToken, (req, res) => {
     .toISOString()
     .slice(0, 10);
 
-  const query = `
-    SELECT SUM(b.totalPrice) AS cityRevenue
-    FROM bookings b
-    JOIN shows s ON b.showId = s.showId
-    JOIN theatre t ON s.theatreId = t.TheatreID
-    WHERE t.city = ? AND b.created >= ?
-  `;
-
-  db.query(query, [city, startDate], (err, result) => {
-    if (err) {
-      console.error("Error fetching city revenue:", err);
-      res
-        .status(500)
-        .json({ error: "An error occurred while fetching city revenue." });
-      return;
+  // Call the stored procedure instead of executing raw SQL query
+  db.query(
+    "CALL CalculateCityRevenue(?, ?, @cityRevenue)",
+    [city, startDate],
+    (err, result) => {
+      if (err) {
+        console.error("Error fetching city revenue:", err);
+        res
+          .status(500)
+          .json({ error: "An error occurred while fetching city revenue." });
+        return;
+      }
+      // Retrieve the output parameter value
+      db.query("SELECT @cityRevenue AS cityRevenue", (err, result) => {
+        if (err) {
+          console.error("Error fetching city revenue:", err);
+          res
+            .status(500)
+            .json({ error: "An error occurred while fetching city revenue." });
+          return;
+        }
+        res.status(200).json(result[0]);
+      });
     }
-    res.status(200).json(result[0]);
-  });
+  );
 });
 
 module.exports = router;
