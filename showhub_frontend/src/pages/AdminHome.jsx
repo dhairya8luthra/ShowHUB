@@ -14,6 +14,7 @@ export default function AdminHome() {
   const [deleteshowForm, setdeleteshowForm] = useState(false);
   const [showAddScreenForm, setshowAddScreenForm] = useState(false);
   const [deletescreenForm, setdeletescreenForm] = useState(false);
+  const [modifyshowForm,setmodifyshowForm] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -38,13 +39,28 @@ export default function AdminHome() {
     screenid: '',
     theatreid: '',
     seatsavailable: '',})
+    const [formShowData, setShowFormData] = useState({
+      screenid: '',
+      theatreid: '',
+      showid:'',
+      starttime:'',
+      endtime:'',
+      price:'',
+      isactive:'',
+      date:'',
+      movieid:''
+    })
+    
+  
+  
 
 
   const [movieTitles, setMovieTitles] = useState([]);
   const [TheatreTitles, setTheatreTitles] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedTheatre, setSelectedTheatre] = useState(null);
-  const [selectedScreen, setSelectedScreen] = useState(null);
+  const [selectedScreen, setSelectedScreen] = useState("");
+  const [selectedShow, setSelectedShow] = useState(null);
 
   useEffect(() => {
     fetchMovieTitles();
@@ -85,6 +101,9 @@ export default function AdminHome() {
     setdeletetheatreForm(option === 'Delete Theatre');
     setdeleteshowForm(option === 'Delete Show');
     setdeletescreenForm(option === 'Delete Screen');
+    setmodifyshowForm(option === 'Modify Show'); 
+
+  
     setFormData({
       title: '',
       description: '',
@@ -107,6 +126,17 @@ export default function AdminHome() {
         theatreid: '',
         seatsavailable: '',
         
+      });
+      setShowFormData({
+        screenid: '',
+        theatreid: '',
+        showid:'',
+        starttime:'',
+        endtime:'',
+        price:'',
+        isactive:'',
+        date:'',
+        movieid:''
       });
     
     setSelectedMovie(null);
@@ -158,7 +188,7 @@ export default function AdminHome() {
       setFormScreenData({
         screenid: screenData.screenID,
         theatreid: screenData.theatreID,
-        seatsavailable: screenData.seatsAvailable,
+        seatsavailable: screenData.seatsAvailable.toString(), // Convert seatsAvailable to string
       });
     } catch (error) {
       console.error('Error fetching screen details:', error);
@@ -167,27 +197,56 @@ export default function AdminHome() {
 
   const handleUpdateScreen = async () => {
     try {
-      const response = await axiosInstance.put(`/screens/${selectedScreen.screenID}`, formScreenData);
-      console.log(response.data);
-      // Optionally, you can show a success message or redirect to another page
+      const response = await axiosInstance.put(`/screens/${selectedScreen.screenid}`, {
+        seatsavailable: formScreenData.seatsavailable,
+      });
+      console.log('Screen updated successfully:', response.data);
+      // Optionally, you can handle UI updates or show a success message here
     } catch (error) {
       console.error('Error updating screen:', error);
-      // Handle error
+      // Optionally, you can handle errors and show an error message here
     }
   };
   
-  const handleDeleteScreen = async (screenID) => {
+  
+  const handleDeleteScreen = async () => {
     try {
+      // Get the value from the input field
+      const screenID = formScreenData.screenid;
+  
       // Display an alert to confirm before deleting
       const confirmDelete = window.confirm(`Are you sure you want to delete the screen with ID "${screenID}"?`);
       if (!confirmDelete) return; // If user cancels, exit function
   
-      const response = await axiosInstance.delete('/deletescreen', { data: { screenID } });
+      // Send the DELETE request with screenID as a route parameter
+      const response = await axiosInstance.delete(`/deletescreen/${screenID}`);
       console.log(response.data);
     } catch (error) {
       console.error('Error deleting screen:', error);
     }
-  };  
+  };
+
+ 
+
+  const handleShowSelect = async (showId) => {
+    try {
+      
+      setSelectedShow(formShowData);
+      // Update form data with show details
+      setShowFormData({
+        showid: formShowData.showid,
+        starttime: formShowData.starttime,
+        endtime: formShowData.endtime,
+        price: formShowData.price,
+        currentstatus: formShowData.currentstatus,
+        date: formShowData.date,
+        runningTime: formShowData.runningTime,
+      });
+    } catch (error) {
+      console.error('Error fetching show details:', error);
+    }
+  };
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -210,6 +269,15 @@ export default function AdminHome() {
       [name]: value,
     });
   };
+  const handleShowInputChange = (e) => {
+    const { name, value } = e.target;
+    setShowFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+  
+
 
   const handleAddMovie = async () => {
     try {
@@ -255,6 +323,7 @@ export default function AdminHome() {
       console.error('Error adding theatre:', error);
     }
   };
+  
 
   const handleUpdateTheatre = async () => {
     try {
@@ -297,15 +366,34 @@ export default function AdminHome() {
     }
   };
 
+  const handleUpdateShow = async () => {
+    try {
+      const response = await axiosInstance.post('/updateshow',{
+        showID: formShowData.showid,
+        movieID: formShowData.movieid,
+        starttime:formShowData.starttime,
+        endtime:formShowData.endtime,
+        price: formShowData.price,
+        theatreid:formShowData.theatreid,
+        screenid:formShowData.screenid,
+        isactive:formShowData.isactive,
+        date:formShowData.date
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error updating show:', error);
+    }
+  }
+
+
   const handleDeleteShow = async () => {
     try {
-      const response = await axiosInstance.post('/deleteshow', formData);
+      const response = await axiosInstance.post('/deleteshow', { showID: formData.showID });
       console.log(response.data);
     } catch (error) {
       console.error('Error deleting show:', error);
     }
   };
-
   
 
   return (
@@ -334,6 +422,7 @@ export default function AdminHome() {
           value={selectedOption}
           style={{ marginBottom: '20px' }}
         />
+        
 
         {showMovieForm && (
           <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
@@ -552,9 +641,6 @@ export default function AdminHome() {
     )}
   </>
 )}
-
-
-
   </form>
 )}
 {showAddScreenForm && selectedOption === 'Add Screen' && (
@@ -579,65 +665,62 @@ export default function AdminHome() {
 
 {selectedOption === 'Modify Screen' && (
   <>
-    <label style={{ display: 'flex', flexDirection: 'column' }}>
-      Screen ID:
-      <input
-        type="text"
-        name="screenid"
-        value={formScreenData.screenid}
-        onChange={(e) => handleSelectScreen(e.target.value)}
-        style={{ padding: '8px' }}
-        placeholder="Enter Screen ID"
-      />
+      <label style={{ display: 'flex', flexDirection: 'column' }}>
+          Screen ID:
+          <input
+            type="text"
+            name="screenid"
+            style={{ padding: '8px' }}
+            placeholder="Enter Screen ID"
+            value={selectedScreen.screenid}
+            onChange={(e) => setSelectedScreen({ ...selectedScreen, screenid: e.target.value })}
+          />
     </label>
     
-    {selectedScreen && (
-      <>
-        <label style={{ display: 'flex', flexDirection: 'column' }}>
-          Theatre ID:
-          <input
-            type="text"
-            name="theatreid"
-            value={formScreenData.theatreid}
-            onChange={handleScreenInputChange}
-            style={{ padding: '8px' }}
-          />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column' }}>
-          Seats Available:
-          <input
-            type="text"
-            name="seatsavailable"
-            value={formScreenData.seatsavailable}
-            onChange={handleScreenInputChange}
-            style={{ padding: '8px' }}
-          />
-        </label>
-        <Button
-          onClick={handleUpdateScreen}
-          color="#fdc500"
-          style={{ alignSelf: 'flex-start' }}
-        >
-          Update Screen
-        </Button>
-      </>
-    )}
+    <label style={{ display: 'flex', flexDirection: 'column' }}>
+      Updated Seats Available:
+      <input
+        type="text"
+        name="seatsavailable"
+        style={{ padding: '8px' }}
+        placeholder="Enter Updated Seats Available"
+        value={formScreenData.seatsavailable}
+        onChange={(e) => setFormScreenData({ ...formScreenData, seatsavailable: e.target.value })}
+      />
+    </label>
+    <Button
+      onClick={handleUpdateScreen}
+      color="#fdc500"
+      style={{ alignSelf: 'flex-start' }}
+    >
+      Update Screen
+    </Button>
   </>
 )}
+
 
 
 {selectedOption === 'Delete Screen' && (
   <label style={{ display: 'flex', flexDirection: 'column' }}>
     Screen ID:
     <input
-      type="text"
-      name="screenID"
-      value={formScreenData.screenID}
-      onChange={(e) => handleDeleteScreen(e.target.value)}
-      style={{ padding: '8px' }}
-      placeholder="Enter Screen ID"
-    />
+  type="text"
+  name="screenid"
+  value={formScreenData.screenid}
+  onChange={handleScreenInputChange}
+  style={{ padding: '8px' , margin: '10px'}}
+  placeholder="Enter Screen ID"
+/>
+
+    <Button
+      onClick={handleDeleteScreen}
+      color="#fdc500"
+      style={{ alignSelf: 'flex-start' ,margin: '8px'}}
+    >
+      Delete Screen
+    </Button>
   </label>
+  
 )}
         {AddShowForm && (
           <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
@@ -694,28 +777,29 @@ export default function AdminHome() {
         {deletetheatreForm && (
           <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
             <label style={{ display: 'flex', flexDirection: 'column' }}>
-      Select Theatre:
-      <Autocomplete
-        data={TheatreTitles}
-        onChange={(value) => handleTheatreSelect(value)}
-        style={{ padding: '8px' }}
-        placeholder="Select theatre name"
-      />
-    </label>
-    {selectedTheatre && (
-      <>
-        <Button onClick={handleDeleteTheatre} color="#dc3545" style={{ alignSelf: 'flex-start' }}>
-          Delete Theatre
-        </Button>
-      </>
-    )}
+              Select Theatre:
+              <Autocomplete
+                data={TheatreTitles}
+                onChange={(value) => handleTheatreSelect(value)}
+                style={{ padding: '8px' }}
+                placeholder="Select theatre name"
+              />
+            </label>
+            {selectedTheatre && (
+              <>
+                <Button onClick={handleDeleteTheatre} color="#dc3545" style={{ alignSelf: 'flex-start' }}>
+                  Delete Theatre
+                </Button>
+              </>
+            )}
           </form>
         )}
+
         {deleteshowForm && (
           <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
             <label style={{ display: 'flex', flexDirection: 'column' }}>
               Show ID:
-              <input type="text" name="title" value={formData.title} onChange={handleInputChange} style={{ padding: '8px' }} />
+              <input type="text" name="showID" value={formData.showID} onChange={handleInputChange} style={{ padding: '8px' }} />
             </label>
             <Button onClick={handleDeleteShow} color="#fdc500" style={{ alignSelf: 'flex-start' }}>
               Delete Show
@@ -723,6 +807,108 @@ export default function AdminHome() {
           </form>
         )}
         
+    {modifyshowForm && selectedOption === 'Modify Show' && (
+      <>
+      <label style={{ display: 'flex', flexDirection: 'column' }}>
+  ShowID:
+  <input
+    name='showid' // Corrected name attribute
+    value={formShowData.showid}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px' }}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  MovieID:
+  <input
+    name='movieid'
+    value={formShowData.movieid}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px' }}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  Starting Time:
+  <input
+    name='starttime'
+    type='time'
+    value={formShowData.starttime}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px', width:'210px'}}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  End Time:
+  <input
+    name='endtime'
+    type='time'
+    value={formShowData.endtime}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px', width:'210px' }}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  Price:
+  <input
+    name='price'
+    value={formShowData.price}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px' }}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  TheatreID:
+  <input
+    name='theatreid'
+    value={formShowData.theatreid}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px' }}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  ScreenID:
+  <input
+    name='screenid'
+    value={formShowData.screenid}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px' }}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  Activity Status:
+  <input
+    name='isactive'
+    value={formShowData.isactive}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px' }}
+    placeholder="Select show"
+  />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  Date:
+  <input
+    name='date'
+    type='date'
+    value={formShowData.date}
+    onChange={handleShowInputChange}
+    style={{ padding: '8px',width:'210px' }}
+    placeholder="Select show"
+  />
+</label>
+
+      <Button onClick={handleUpdateShow} color="#fdc500" style={{ alignSelf: 'flex-start', left:'615px',margin:'25px' }}>
+                Update Show
+      </Button>
+      </>
+  )}
+    
       </div>
     </div>
   );

@@ -22,9 +22,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 const data = [
-  { link: '/home', label: 'MODIFY DATABASE', icon: IconDatabaseImport },
-  { link: '', label: 'ANALYTICS', icon: IconBrandGoogleAnalytics },
-  { link: '', label: 'Log out', icon: IconLogout2},
+  { link: '/modifydatabase', label: 'MODIFY DATABASE', icon: IconDatabaseImport },
+  { link: '/adminanalytics', label: 'ANALYTICS', icon: IconBrandGoogleAnalytics },
+  { link: '/Logout', label: 'Log out', icon: IconLogout2},
 ];
 
 

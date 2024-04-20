@@ -33,7 +33,7 @@ import {
   
   import Lottie from 'react-lottie-player'
   import movingreelJson from '../../lotties/transform.json'
-  import { Link } from 'react-router-dom';
+  import { Link,useNavigate } from 'react-router-dom';
   const mockdata = [
     {
       icon: IconCode,
@@ -71,6 +71,8 @@ import {
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
     const theme = useMantineTheme();
+    const navigate = useNavigate();
+    const handleRegister = () => {navigate('/register')};
   
     const links = mockdata.map((item) => (
       <UnstyledButton className={classes.subLink} key={item.title}>
@@ -165,7 +167,7 @@ import {
             <Group visibleFrom="sm">
                  <ButtonLogin />
                 
-                <Button>Sign up</Button>
+                <Button onClick={handleRegister}>Sign up</Button>
                 
             </Group>
   

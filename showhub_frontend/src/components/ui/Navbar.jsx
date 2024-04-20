@@ -25,7 +25,7 @@ const data = [
   { link: '/home', label: 'Movies', icon: IconMovie },
   { link: '', label: 'Past Bookings', icon: IconTicket },
   { link: '', label: 'Settings', icon: IconSettings },
-  { link: '', label: 'Log out', icon: IconLogout2},
+  { link: '/Logout', label: 'Log out', icon: IconLogout2},
 ];
 
 

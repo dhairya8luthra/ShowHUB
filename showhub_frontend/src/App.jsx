@@ -8,6 +8,8 @@ import MovieDetails from "./pages/MovieDetails"
 import Selectseats from "./pages/Selectseats"
 import Bookingconfirmed from "./pages/Bookingconfirmed"
 import AdminHome from "./pages/AdminHome"
+import Analytics from "./pages/Analytics"
+import Logout from "./pages/Logout"
 import {AuthProvider} from "./context/AuthContext"
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
       <Route path="/shows/:showId/selectseats/:screenId/moviename/:movietitle/price/:price" element={<Selectseats />}/>
       <Route path="/bookingconfirmed" element={<Bookingconfirmed/>}/>
       <Route path="/modifydatabase" element={<AdminHome/>}/>
+      <Route path="/adminanalytics" element={<Analytics/>}/>
+      <Route path="/Logout" element={<Logout/>}/>
     </Routes>
     </AuthProvider>
     </>

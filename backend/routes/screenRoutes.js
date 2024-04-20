@@ -36,11 +36,10 @@ router.get("/screens/:screenID", (req, res) => {
 
 // Update a screen
 router.put("/screens/:screenID", (req, res) => {
-  const { screenid } = req.params;
-  const { theatreid, seatsavailable } = req.body;
-  const query =
-    "UPDATE screens SET theatreID = ?, seatsAvailable = ? WHERE screenID = ?";
-  db.query(query, [theatreid, seatsavailable, screenid], (err, result) => {
+  const { screenID } = req.params;
+  const { seatsavailable } = req.body;
+  const query = "UPDATE screens SET seatsAvailable = ? WHERE screenID = ?";
+  db.query(query, [seatsavailable, screenID], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ message: "An error occurred" });
@@ -48,15 +47,16 @@ router.put("/screens/:screenID", (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Screen not found" });
     }
-    res.json({ screenID, theatreID, seatsAvailable });
+    res.json({ screenID, seatsavailable });
   });
 });
 
 // Delete a screen
-router.delete("/deletescreen/:screenID", (req, res) => {
-  const { screenID } = req.params;
+router.delete("/deletescreen/:screenid", (req, res) => {
+  const { screenid } = req.params;
+  console.log(screenid);
   const query = "DELETE FROM screens WHERE screenID = ?";
-  db.query(query, [screenID], (err, result) => {
+  db.query(query, [screenid], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ message: "An error occurred" });
