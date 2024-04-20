@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require("../db/db");
 const verifyToken = require("../middleware/verifytoken");
 
-// Route to get revenue from a particular movie in a particular theatre for the last N days
 router.get(
   "/analytics/movie/:movieName/:theatreName/:days",
   verifyToken,
@@ -15,25 +14,31 @@ router.get(
       .toISOString()
       .slice(0, 10);
 
-    const query = `
-    SELECT SUM(b.totalPrice) AS revenue
-    FROM bookings b
-    JOIN shows s ON b.showId = s.showId
-    JOIN movies m ON s.movieId = m.movieid
-    JOIN theatre t ON s.theatreId = t.TheatreID
-    WHERE m.title = ? AND t.TheatreName = ? AND b.created >= ?
-  `;
-
-    db.query(query, [movieName, theatreName, startDate], (err, result) => {
-      if (err) {
-        console.error("Error fetching movie revenue:", err);
-        res
-          .status(500)
-          .json({ error: "An error occurred while fetching movie revenue." });
-        return;
+    // Call the stored procedure
+    db.query(
+      "CALL CalculateRevenue(?, ?, ?, @revenue)",
+      [movieName, theatreName, startDate],
+      (err, result) => {
+        if (err) {
+          console.error("Error fetching movie revenue:", err);
+          res
+            .status(500)
+            .json({ error: "An error occurred while fetching movie revenue." });
+          return;
+        }
+        // Retrieve the output parameter value
+        db.query("SELECT @revenue AS revenue", (err, result) => {
+          if (err) {
+            console.error("Error fetching revenue:", err);
+            res
+              .status(500)
+              .json({ error: "An error occurred while fetching revenue." });
+            return;
+          }
+          res.status(200).json(result[0]);
+        });
       }
-      res.status(200).json(result[0]);
-    });
+    );
   }
 );
 
