@@ -44,21 +44,28 @@ router.get("/analytics/total/:days", verifyToken, (req, res) => {
     .toISOString()
     .slice(0, 10);
 
-  const query = `
-    SELECT SUM(totalPrice) AS totalRevenue
-    FROM bookings
-    WHERE created >= ?
-  `;
+  const callQuery = `CALL CalculateTotalRevenue(?, @totalRevenue);`;
+  const selectQuery = `SELECT @totalRevenue AS totalRevenue;`;
 
-  db.query(query, [startDate], (err, result) => {
-    if (err) {
-      console.error("Error fetching total revenue:", err);
+  db.query(callQuery, [startDate], (callErr, callResult) => {
+    if (callErr) {
+      console.error("Error calling CalculateTotalRevenue:", callErr);
       res
         .status(500)
-        .json({ error: "An error occurred while fetching total revenue." });
+        .json({ error: "An error occurred while calculating total revenue." });
       return;
     }
-    res.status(200).json(result[0]);
+
+    db.query(selectQuery, (selectErr, selectResult) => {
+      if (selectErr) {
+        console.error("Error fetching total revenue:", selectErr);
+        res
+          .status(500)
+          .json({ error: "An error occurred while fetching total revenue." });
+        return;
+      }
+      res.status(200).json(selectResult[0]);
+    });
   });
 });
 
