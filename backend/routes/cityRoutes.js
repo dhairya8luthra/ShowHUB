@@ -23,13 +23,9 @@ router.get("/cities", (req, res) => {
 router.get("/movies/:movieName/theatres/:cityName", verifyToken, (req, res) => {
   const movieName = decodeURIComponent(req.params.movieName);
   const cityName = decodeURIComponent(req.params.cityName);
-  const query = `
-    SELECT t.*
-    FROM theatre t
-    INNER JOIN shows s ON t.TheatreID = s.TheatreID
-    INNER JOIN movies m ON s.MovieID = m.movieId
-    WHERE m.title = ? AND t.city = ?
-  `;
+
+  const query = "CALL GetTheatresByMovieAndCity(?, ?)";
+
   db.query(query, [movieName, cityName], (err, results) => {
     if (err) {
       console.error("Error fetching theatres:", err);
@@ -38,7 +34,7 @@ router.get("/movies/:movieName/theatres/:cityName", verifyToken, (req, res) => {
         .json({ error: "An error occurred while fetching theatres." });
       return;
     }
-    res.json(results);
+    res.json(results[0]); // Assuming theatres are returned in the first result set
     console.log(results);
   });
 });
