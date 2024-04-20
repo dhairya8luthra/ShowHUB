@@ -23,8 +23,7 @@ import { useNavigate } from 'react-router-dom';
 
 const data = [
   { link: '/home', label: 'Movies', icon: IconMovie },
-  { link: '', label: 'Past Bookings', icon: IconTicket },
-  { link: '', label: 'Settings', icon: IconSettings },
+  { link: '/PastBooking', label: 'Past Bookings', icon: IconTicket },
   { link: '/Logout', label: 'Log out', icon: IconLogout2},
 ];
 

@@ -1,0 +1,36 @@
+.past-booking-container {
+    display: flex;
+  }
+  
+  .booking-table-container {
+    margin: 20px;
+  }
+  
+  .booking-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .booking-table th,
+  .booking-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .booking-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .cancel-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c82333;
+  }
+   

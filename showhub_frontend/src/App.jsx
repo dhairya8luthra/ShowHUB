@@ -11,6 +11,7 @@ import AdminHome from "./pages/AdminHome"
 import Analytics from "./pages/Analytics"
 import Logout from "./pages/Logout"
 import {AuthProvider} from "./context/AuthContext"
+import PastBooking from "./pages/PastBooking"
 
 function App() {
  
@@ -30,6 +31,7 @@ function App() {
       <Route path="/modifydatabase" element={<AdminHome/>}/>
       <Route path="/adminanalytics" element={<Analytics/>}/>
       <Route path="/Logout" element={<Logout/>}/>
+      <Route path="/PastBooking" element={<PastBooking/>}/>
     </Routes>
     </AuthProvider>
     </>

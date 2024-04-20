@@ -95,5 +95,46 @@ router.post("/createbooking", verifyToken, (req, res) => {
     );
   });
 });
+// Route to fetch past bookings
+router.get("/pastbookings/:email", verifyToken, (req, res) => {
+  const userEmail = req.params.email;
+  const getPastBookingsProcedure = "CALL GetUserBookingsByEmail(?)";
+
+  db.query(getPastBookingsProcedure, [userEmail], (err, results) => {
+    if (err) {
+      console.error("Error fetching past bookings:", err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while fetching past bookings." });
+      return;
+    }
+    console.log(results);
+    res.json(results[0]); // Assuming past bookings are returned in the first result set
+  });
+});
+// Route to cancel a booking
+router.delete("/cancelbooking/:bookingId", verifyToken, (req, res) => {
+  const { bookingId } = req.params;
+
+  // Call the stored procedure to cancel the booking
+  const cancelBookingProcedure = "CALL cancel_booking(?)";
+
+  db.query(cancelBookingProcedure, [bookingId], (err, results) => {
+    if (err) {
+      console.error("Error cancelling booking:", err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while cancelling booking." });
+      return;
+    }
+
+    if (results.affectedRows === 0) {
+      res.status(404).json({ error: "Booking not found or unauthorized." });
+      return;
+    }
+
+    res.json({ message: "Booking cancelled successfully." });
+  });
+});
 
 module.exports = router;
