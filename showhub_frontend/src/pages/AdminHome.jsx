@@ -23,7 +23,7 @@ export default function AdminHome() {
     genre: '',
     trailer_link: '',
     releaseDate: '',
-    posterLink: '',
+    poster_link: '',
     runningTime: '',
     createdAt: '',
     movieFormat: '',
@@ -153,9 +153,9 @@ export default function AdminHome() {
         description: movieData.description,
         actors: movieData.actors,
         genre: movieData.genre,
-        trailerLink: movieData.trailer_link,
+        trailer_link: movieData.trailer_link,
         releaseDate: movieData.release_date,
-        posterLink: movieData.poster_link,
+        poster_link: movieData.poster_link,
         runningTime: movieData.running_time,
         createdAt: movieData.createdat,
         movieFormat: movieData.movie_format,
@@ -457,7 +457,7 @@ export default function AdminHome() {
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column' }}>
                   Trailer Link:
-                  <input type="text" name="trailerLink" value={formData.trailer_link} onChange={handleInputChange} style={{ padding: '8px' }} />
+                  <input type="text" name="trailer_link" value={formData.trailer_link} onChange={handleInputChange} style={{ padding: '8px' }} />
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column' }}>
                   Release Date:
@@ -465,7 +465,7 @@ export default function AdminHome() {
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column' }}>
                   Poster Link:
-                  <input type="text" name="posterLink" value={formData.posterLink} onChange={handleInputChange} style={{ padding: '8px' }} />
+                  <input type="text" name="poster_link" value={formData.poster_link} onChange={handleInputChange} style={{ padding: '8px' }} />
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column' }}>
                   Running Time:
@@ -520,7 +520,7 @@ export default function AdminHome() {
                     </label>
                     <label style={{ display: 'flex', flexDirection: 'column' }}>
                       Poster Link:
-                      <input type="text" name="posterLink" value={formData.posterLink} onChange={handleInputChange} style={{ padding: '8px' }} />
+                      <input type="text" name="poster_link" value={formData.poster_link} onChange={handleInputChange} style={{ padding: '8px' }} />
                     </label>
                     <label style={{ display: 'flex', flexDirection: 'column' }}>
                       Running Time:
