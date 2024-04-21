@@ -20,7 +20,9 @@ ShowHub is a cutting-edge solution revolutionizing cineplex management systems. 
 1) cd backend
 2) npm i
 3) add db credentials inside db.js in db folder
-4) node index.js
+4) run sql files in setting up database folder
+5) run procedures and triggers in the db folder
+6) node index.js
 
 ## SCREENSHOTS
 
