@@ -271,8 +271,8 @@ export default function AdminHome() {
   };
   const handleShowInputChange = (e) => {
     const { name, value } = e.target;
-    setShowFormData((prevFormData) => ({
-      ...prevFormData,
+    setShowFormData((formShowData) => ({
+      ...formShowData,
       [name]: value,
     }));
   };
@@ -337,7 +337,7 @@ export default function AdminHome() {
   };
   const handleAddShow = async () => {
     try {
-      const response = await axiosInstance.post('/addshow', formData);
+      const response = await axiosInstance.post('/addshow', formShowData);
       console.log(response.data);
     } catch (error) {
       console.error('Error adding show:', error);
@@ -724,38 +724,39 @@ export default function AdminHome() {
 )}
         {AddShowForm && (
           <form style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', gap: '10px' }}>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              MovieID:
-              <input type="text" name="title" value={formData.title} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              StartingTime:
-              <input type="time" name="actors" value={formData.actors} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              EndTime:
-              <input type="time" name="actors" value={formData.actors} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              Price:
-              <input type="text" name="genre" value={formData.genre} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              TheatreID:
-              <input type="text" name="trailerLink" value={formData.trailerLink} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              ScreenID:
-              <input type="text" name="releaseDate" value={formData.releaseDate} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              isActive:
-              <input type="text" name="runningTime" value={formData.runningTime} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column' }}>
-              DateOfShow:
-              <input type="datetime-local" name="createdAt" value={formData.createdAt} onChange={handleInputChange} style={{ padding: '8px' }} />
-            </label>
+           <label style={{ display: 'flex', flexDirection: 'column' }}>
+  MovieID:
+  <input type="text" name="movieid" value={formShowData.movieid} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  StartingTime:
+  <input type="time" name="starttime" value={formShowData.starttime} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  EndTime:
+  <input type="time" name="endtime" value={formShowData.endtime} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  Price:
+  <input type="text" name="price" value={formShowData.price} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  TheatreID:
+  <input type="text" name="theatreid" value={formShowData.theatreid} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  ScreenID:
+  <input type="text" name="screenid" value={formShowData.screenid} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  isActive:
+  <input type="text" name="isactive" value={formShowData.isactive} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+<label style={{ display: 'flex', flexDirection: 'column' }}>
+  DateOfShow:
+  <input type="datetime-local" name="date" value={formShowData.date} onChange={handleShowInputChange} style={{ padding: '8px' }} />
+</label>
+
             <Button onClick={handleAddShow} color="#fdc500" style={{ alignSelf: 'flex-start' }}>
               Add Show
             </Button>

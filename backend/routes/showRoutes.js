@@ -3,6 +3,49 @@ const router = express.Router();
 const db = require("../db/db");
 const verifyToken = require("../middleware/verifytoken"); // Import the verifyToken middleware
 
+router.post("/addshow", (req, res) => {
+  const {
+    movieid,
+    starttime,
+    endtime,
+    price,
+    theatreid,
+    screenid,
+    isactive,
+    date,
+  } = req.body;
+  console.log(req.body);
+  const SHOWID = Math.floor(Math.random() * 1000000) + 1;
+  // Check if any required values are missing
+
+  const query =
+    "INSERT INTO shows (Showid,MovieID, StartTiming, EndTime, Price, TheatreID, ScreenID, isActive, Date_Of_Movie) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)";
+  db.query(
+    query,
+    [
+      SHOWID,
+      movieid,
+      starttime,
+      endtime,
+      price,
+      theatreid,
+      screenid,
+      isactive,
+      date,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "An error occurred" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Show not found" });
+      }
+      res.json({ message: "Show Added successfully" });
+    }
+  );
+});
+
 // Protected route
 router.get(
   "/shows/movies/:moviename/theatre/:theatre_id",
@@ -68,7 +111,7 @@ router.post("/updateshow", (req, res) => {
   }
 
   const query =
-    "UPDATE shows SET MovieID=?, StartTiming=?, EndTime=?, Price=?, TheatreID=?, ScreenID=?, isActive=?, DateOfMovie=? WHERE showID = ?";
+    "UPDATE shows SET MovieID=?, StartTiming=?, EndTime=?, Price=?, TheatreID=?, ScreenID=?, isActive=?, Date_Of_Movie=? WHERE showID = ?";
   db.query(
     query,
     [
