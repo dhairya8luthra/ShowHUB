@@ -4,25 +4,38 @@ const db = require("../db/db");
 const jwt = require("jsonwebtoken");
 const secretKey = "jwt_secret_key";
 // Register route
+const moment = require("moment");
+
 router.post("/register", (req, res) => {
   const emailid = req.body.email;
   const password = req.body.password;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const dateOfBirth = moment(req.body.dateOfBirth).format(
+    "YYYY-MM-DD HH:mm:ss"
+  );
   const userId = Math.floor(Math.random() * (9999 - 1000) + 1000);
 
   db.query(
-    "INSERT INTO user (userid, email, password) VALUES (?, ?, ?)",
-    [userId, emailid, password],
+    "INSERT INTO user (userid, email, password, first_name, last_name, birthday) VALUES (?, ?, ?, ?, ?, ?)",
+    [userId, emailid, password, firstName, lastName, dateOfBirth],
     (err, result) => {
       if (err) {
         console.error("Error registering user:", err);
         res.status(500).send("An error occurred while registering the user.");
       } else {
-        res.status(200).send("User registered successfully.");
+        if (result.affectedRows > 0) {
+          const token = jwt.sign({ userId }, secretKey, { expiresIn: "1h" });
+          req.session.userId = userId;
+          res.status(200).json({ token });
+          console.log("Token:", token);
+        } else {
+          res.status(500).send("Failed to register user.");
+        }
       }
     }
   );
 });
-
 // Login route
 router.post("/login", (req, res) => {
   const emailid = req.body.email;
